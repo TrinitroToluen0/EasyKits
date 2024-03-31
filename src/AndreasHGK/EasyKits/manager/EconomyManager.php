@@ -18,6 +18,7 @@ use pocketmine\player\Player;
 use AndreasHGK\EasyKits\EasyKits;
 
 use cooldogedev\BedrockEconomy\BedrockEconomy;
+use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
 use cooldogedev\BedrockEconomy\api\legacy\ClosureContext;
 
 use onebone\economyapi\EconomyAPI;
@@ -136,7 +137,7 @@ class EconomyManager{
         }
         $bedrockEconomy = $plugins->getPlugin("BedrockEconomy");
         if($bedrockEconomy instanceof BedrockEconomy){
-            self::$economy = $bedrockEconomy;
+            self::$economy = BedrockEconomyAPI::legacy();
             EasyKits::get()->getLogger()->info("loaded BedrockEconomy");
             return;
         }
