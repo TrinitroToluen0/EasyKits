@@ -34,16 +34,21 @@ class EconomyManager{
      * @param Player $player
      * @return float
      */
-    public static function getMoney(Player $player): float{
+    public static function getMoney(Player $player): float
+    {
         $economy = self::getEconomy();
-        switch(true){
+        switch (true) {
             case $economy instanceof EconomyAPI:
                 return $economy->myMoney($player);
             case $economy instanceof MultiEconomy:
                 $currency = DataManager::getKey(DataManager::CONFIG, "multieconomy-currency");
                 return $economy->getAPI()->getBalance($player->getName(), $currency);
             case $economy instanceof BedrockEconomy:
-                 return $economy->getAPI()->getPlayerBalance($player->getName());
+                $balance = 0;
+                $economy->getPlayerBalance($player->getName(), ClosureContext::create(static function (?int $balance) use (&$balance): void {
+                    $balance = $balance ?? 0;
+                }));
+                return $balance;
         }
         return 0;
     }
@@ -54,8 +59,9 @@ class EconomyManager{
      * @param boolean $force
      * @return void
      */
-    public static function setMoney(Player $player, float $money, bool $force = false): void{
-        switch(true) {
+    public static function setMoney(Player $player, float $money, bool $force = false): void
+    {
+        switch (true) {
             case self::getEconomy() instanceof EconomyAPI:
                 self::getEconomy()->setMoney($player, $money);
                 break;
@@ -63,7 +69,9 @@ class EconomyManager{
                 self::getEconomy()->getAPI()->setBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
             case self::getEconomy() instanceof BedrockEconomy:
-                self::getEconomy()->getAPI()->setPlayerBalance($player->getName(), (int)$money);
+                self::getEconomy()->setPlayerBalance($player->getName(), (int)$money, ClosureContext::create(static function (bool $success): void {
+                    // handle success or failure
+                }));
                 break;
         }
     }
@@ -74,8 +82,9 @@ class EconomyManager{
      * @param boolean $force
      * @return void
      */
-    public static function reduceMoney(Player $player, float $money, bool $force = false): void{
-        switch(true) {
+    public static function reduceMoney(Player $player, float $money, bool $force = false): void
+    {
+        switch (true) {
             case self::getEconomy() instanceof EconomyAPI:
                 self::getEconomy()->reduceMoney($player, $money, $force);
                 break;
@@ -83,19 +92,22 @@ class EconomyManager{
                 self::getEconomy()->getAPI()->takeFromBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
             case self::getEconomy() instanceof BedrockEconomy:
-                self::getEconomy()->getAPI()->subtractFromPlayerBalance($player->getName(), (int)$money);
+                self::getEconomy()->subtractFromPlayerBalance($player->getName(), (int)$money, ClosureContext::create(static function (bool $success): void {
+                    // handle success or failure
+                }));
                 break;
         }
     }
-    
+
     /**
      * @param Player $player
      * @param float $money
      * @param boolean $force
      * @return void
      */
-    public static function addMoney(Player $player, float $money, bool $force = false): void{
-        switch(true) {
+    public static function addMoney(Player $player, float $money, bool $force = false): void
+    {
+        switch (true) {
             case self::getEconomy() instanceof EconomyAPI:
                 self::getEconomy()->addMoney($player, $money, $force);
                 break;
@@ -103,7 +115,9 @@ class EconomyManager{
                 self::getEconomy()->getAPI()->addToBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
             case self::getEconomy() instanceof BedrockEconomy:
-                self::getEconomy()->getAPI()->addToPlayerBalance($player->getName(), (int)$money);
+                self::getEconomy()->addToPlayerBalance($player->getName(), (int)$money, ClosureContext::create(static function (bool $success): void {
+                    // handle success or failure
+                }));
                 break;
         }
     }
