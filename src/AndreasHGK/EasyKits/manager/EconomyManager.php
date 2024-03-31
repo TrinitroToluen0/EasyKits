@@ -45,13 +45,14 @@ class EconomyManager{
                 return $economy->getAPI()->getBalance($player->getName(), $currency);
             case $economy instanceof BedrockEconomy:
                 $balance = 0;
-                $economy->getPlayerBalance($player->getName(), ClosureContext::create(static function (?int $balance) use (&$balance): void {
-                    $balance = $balance ?? 0;
+                $economy->getPlayerBalance($player->getName(), ClosureContext::create(static function (?int $newBalance) use (&$balance): void {
+                    $balance = $newBalance ?? 0;
                 }));
                 return $balance;
         }
         return 0;
     }
+
 
     /**
      * @param Player $player
