@@ -45,11 +45,15 @@ class EconomyManager{
                 $currency = DataManager::getKey(DataManager::CONFIG, "multieconomy-currency");
                 return $economy->getAPI()->getBalance($player->getName(), $currency);
             case $economy instanceof BedrockEconomy:
-                $balance = 0;
-                $economy->getPlayerBalance($player->getName(), ClosureContext::create(static function (?int $newBalance) use (&$balance): void {
-                    $balance = $newBalance ?? 0;
-                }));
-                return $balance;
+                $economy->get(
+                    xuid: $player->getXuid(),
+                    username: $player->getName(),
+                    onSuccess: static function (array $result) {
+                        return $result["amount"];
+                    },
+                    onError: static function (): void {
+                    }
+                );
         }
         return 0;
     }
@@ -63,17 +67,23 @@ class EconomyManager{
      */
     public static function setMoney(Player $player, float $money, bool $force = false): void
     {
+        $economy = self::getEconomy();
         switch (true) {
-            case self::getEconomy() instanceof EconomyAPI:
-                self::getEconomy()->setMoney($player, $money);
+            case $economy instanceof EconomyAPI:
+                $economy->setMoney($player, $money);
                 break;
-            case self::getEconomy() instanceof MultiEconomy:
-                self::getEconomy()->getAPI()->setBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
+            case $economy instanceof MultiEconomy:
+                $economy->getAPI()->setBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
-            case self::getEconomy() instanceof BedrockEconomy:
-                self::getEconomy()->setPlayerBalance($player->getName(), (int)$money, ClosureContext::create(static function (bool $success): void {
-                    // handle success or failure
-                }));
+            case $economy instanceof BedrockEconomy:
+                $economy->set(
+                    xuid: $player->getXuid(),
+                    username: $player->getName(),
+                    amount: (int) $money,
+                    decimals: 0,
+                    onSuccess: static function (): void {},
+                    onError: static function (): void {}
+                );
                 break;
         }
     }
@@ -86,17 +96,23 @@ class EconomyManager{
      */
     public static function reduceMoney(Player $player, float $money, bool $force = false): void
     {
+        $economy = self::getEconomy();
         switch (true) {
-            case self::getEconomy() instanceof EconomyAPI:
-                self::getEconomy()->reduceMoney($player, $money, $force);
+            case $economy instanceof EconomyAPI:
+                $economy->reduceMoney($player, $money, $force);
                 break;
-            case self::getEconomy() instanceof MultiEconomy:
-                self::getEconomy()->getAPI()->takeFromBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
+            case $economy instanceof MultiEconomy:
+                $economy->getAPI()->takeFromBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
-            case self::getEconomy() instanceof BedrockEconomy:
-                self::getEconomy()->subtractFromPlayerBalance($player->getName(), (int)$money, ClosureContext::create(static function (bool $success): void {
-                    // handle success or failure
-                }));
+            case $economy instanceof BedrockEconomy:
+                $economy->subtract(
+                    xuid: $player->getXuid(),
+                    username: $player->getName(),
+                    amount: (int) $money,
+                    decimals: 0,
+                    onSuccess: static function (): void {},
+                    onError: static function (): void {}
+                );
                 break;
         }
     }
@@ -109,17 +125,23 @@ class EconomyManager{
      */
     public static function addMoney(Player $player, float $money, bool $force = false): void
     {
+        $economy = self::getEconomy();
         switch (true) {
-            case self::getEconomy() instanceof EconomyAPI:
-                self::getEconomy()->addMoney($player, $money, $force);
+            case $economy instanceof EconomyAPI:
+                $economy->addMoney($player, $money, $force);
                 break;
-            case self::getEconomy() instanceof MultiEconomy:
-                self::getEconomy()->getAPI()->addToBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
+            case $economy instanceof MultiEconomy:
+                $economy->getAPI()->addToBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
-            case self::getEconomy() instanceof BedrockEconomy:
-                self::getEconomy()->addToPlayerBalance($player->getName(), (int)$money, ClosureContext::create(static function (bool $success): void {
-                    // handle success or failure
-                }));
+            case $economy instanceof BedrockEconomy:
+                $economy->add(
+                    xuid: $player->getXuid(),
+                    username: $player->getName(),
+                    amount: (int) $money,
+                    decimals: 0,
+                    onSuccess: static function (): void {},
+                    onError: static function (): void {}
+                );
                 break;
         }
     }
@@ -137,7 +159,7 @@ class EconomyManager{
         }
         $bedrockEconomy = $plugins->getPlugin("BedrockEconomy");
         if($bedrockEconomy instanceof BedrockEconomy){
-            self::$economy = BedrockEconomyAPI::legacy();
+            self::$economy = BedrockEconomyAPI::CLOSURE();
             EasyKits::get()->getLogger()->info("loaded BedrockEconomy");
             return;
         }
