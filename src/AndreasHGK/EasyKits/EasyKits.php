@@ -62,15 +62,6 @@ class EasyKits extends PluginBase{
         $this->loadKits();
         $this->loadCommands();
         $this->loadEvents();
-        $this->getLogger()->info("
- _____                         _  __  _   _             _____   ___  __  __  _____   ____  
-| ____|   __ _   ___   _   _  | |/ / (_) | |_   ___    |  ___| |_ _| \ \/ / | ____| |  _ \ 
-|  _|    / _` | / __| | | | | | ' /  | | | __| / __|   | |_     | |   \  /  |  _|   | | | |
-| |___  | (_| | \__ \ | |_| | | . \  | | | |_  \__ \   |  _|    | |   /  \  | |___  | |_| |
-|_____|  \__,_| |___/  \__, | |_|\_\ |_|  \__| |___/   |_|     |___| /_/\_\ |_____| |____/ 
-                        |___/           
-        by fernanACM & AndreasHGK | https://github.com/fernanACM                                                    
-           ");
     }
 
     /**
