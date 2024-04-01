@@ -34,7 +34,7 @@ class EconomyManager{
      * @param Player $player
      * @return float
      */
-    public static function getMoney(Player $player): float
+    public static function getMoney(Player $player, callable $callback): void
     {
         $economy = self::getEconomy();
         $money = 0;
@@ -48,9 +48,8 @@ class EconomyManager{
                 BedrockEconomyAPI::CLOSURE()->get(
                     xuid: $player->getXuid(),
                     username: $player->getName(),
-                    onSuccess: function (array $result) use (&$money) {
-                        $money = $result["amount"];
-                        EasyKits::get()->getLogger()->info("1: $money");
+                    onSuccess: function (array $result) use ($callback) {
+                        $callback($result["amount"]);
                     },
                     onError: static function (): void {}
                 );

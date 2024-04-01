@@ -106,15 +106,18 @@ class Kit{
                 throw new KitException("Kit is on cooldown", 0);
             }
         }
-        if($kit->getPrice() > 0){
-            if(EconomyManager::isEconomyLoaded()){
-                if(EconomyManager::getMoney($player) < $this->getPrice()){
-                    throw new KitException("Player has insufficient funds", 1);
+
+        EconomyManager::getMoney($player, function (float $money) use ($kit) {
+            if ($kit->getPrice() > 0) {
+                if (EconomyManager::isEconomyLoaded()) {
+                    if ($money < $this->getPrice()) {
+                        throw new KitException("Player has insufficient funds", 1);
+                    }
+                } else {
+                    throw new KitException("Economy not found", 2);
                 }
-            }else{
-                throw new KitException("Economy not found", 2);
             }
-        }
+        });
 
         if(count($player->getInventory()->getContents(false)) >= $player->getInventory()->getSize()){
             throw new KitException("Player has insufficient space", 3);
@@ -158,17 +161,18 @@ class Kit{
             }
         }
 
-        $money = EconomyManager::getMoney($player);
-        EasyKits::get()->getLogger()->info("3: $money");
-        if($kit->getPrice() > 0){
-            if(EconomyManager::isEconomyLoaded()){
-                if(EconomyManager::getMoney($player) < $this->getPrice()){
-                    throw new KitException("Player has insufficient funds", 1);
+        EconomyManager::getMoney($player, function (float $money) use ($kit) {
+            EasyKits::get()->getLogger()->info("3: $money");
+            if ($kit->getPrice() > 0) {
+                if (EconomyManager::isEconomyLoaded()) {
+                    if ($money < $this->getPrice()) {
+                        throw new KitException("Player has insufficient funds", 1);
+                    }
+                } else {
+                    throw new KitException("Economy not found", 2);
                 }
-            }else{
-                throw new KitException("Economy not found", 2);
             }
-        }
+        });
 
         $armorSlots = $this->getArmor();
         $playerArmorInv = $player->getArmorInventory();
