@@ -36,6 +36,7 @@ class EconomyManager{
      */
     public static function getMoney(Player $player): float
     {
+        self::loadEconomy();
         $economy = self::getEconomy();
         EasyKits::get()->getLogger()->info(get_class($economy) . "\n");
         switch (true) {
