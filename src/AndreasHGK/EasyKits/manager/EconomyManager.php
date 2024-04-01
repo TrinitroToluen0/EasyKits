@@ -34,7 +34,7 @@ class EconomyManager{
      * @param Player $player
      * @return float
      */
-    public static function getMoney(Player $player, callable $callback): void
+    public static function getMoney(Player $player, callable $callback)
     {
         $economy = self::getEconomy();
         $money = 0;
