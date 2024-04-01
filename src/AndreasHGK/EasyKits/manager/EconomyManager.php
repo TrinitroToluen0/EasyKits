@@ -37,7 +37,6 @@ class EconomyManager{
     public static function getMoney(Player $player, callable $callback)
     {
         $economy = self::getEconomy();
-        $money = 0;
         switch (true) {
             case $economy instanceof EconomyAPI:
                 return $economy->myMoney($player);
@@ -54,8 +53,6 @@ class EconomyManager{
                     onError: static function (): void {}
                 );
         }
-        EasyKits::get()->getLogger()->info("2: $money");
-        return $money;
     }
 
     /**

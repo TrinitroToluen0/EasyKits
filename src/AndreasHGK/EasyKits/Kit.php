@@ -162,7 +162,6 @@ class Kit{
         }
 
         EconomyManager::getMoney($player, function (float $money) use ($kit) {
-            EasyKits::get()->getLogger()->info("3: $money");
             if ($kit->getPrice() > 0) {
                 if (EconomyManager::isEconomyLoaded()) {
                     if ($money < $this->getPrice()) {
