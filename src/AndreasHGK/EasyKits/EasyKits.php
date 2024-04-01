@@ -49,7 +49,6 @@ class EasyKits extends PluginBase{
         DataManager::loadFiles();
         PiggyCustomEnchantsLoader::load();
         CooldownManager::loadCooldowns();
-        EconomyManager::loadEconomy();
         if(!EconomyManager::isEconomyLoaded()) $this->getLogger()->notice("no compatible economy loaded");
     }
 
@@ -59,6 +58,7 @@ class EasyKits extends PluginBase{
     public function onEnable(): void{
         DataManager::loadCheck();
         DataManager::loadVirions();
+        EconomyManager::loadEconomy();
         $this->loadKits();
         $this->loadCommands();
         $this->loadEvents();

@@ -48,13 +48,13 @@ class EconomyManager{
                     xuid: $player->getXuid(),
                     username: $player->getName(),
                     onSuccess: function (array $result) {
-                        echo $result["amount"];
+                        echo $result["amount"] . "\n";
                         return $result["amount"];
                     },
                     onError: static function (): void {}
                 );
         }
-        echo "NO INSTANCE";
+        echo "NO INSTANCE\n";
         return 0;
     }
 
