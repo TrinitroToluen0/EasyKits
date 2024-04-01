@@ -19,7 +19,6 @@ use AndreasHGK\EasyKits\EasyKits;
 
 use cooldogedev\BedrockEconomy\BedrockEconomy;
 use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
-use cooldogedev\BedrockEconomy\api\legacy\ClosureContext;
 
 use onebone\economyapi\EconomyAPI;
 use Twisted\MultiEconomy\MultiEconomy;
@@ -48,17 +47,14 @@ class EconomyManager{
                 BedrockEconomyAPI::CLOSURE()->get(
                     xuid: $player->getXuid(),
                     username: $player->getName(),
-                    onSuccess: static function (array $result) {
-                        echo print_r($result);
+                    onSuccess: function (array $result) {
                         echo $result["amount"];
                         return $result["amount"];
                     },
-                    onError: static function ($player): void {
-                        $player->sendMessage("ERROR EKITS");
-                    }
+                    onError: static function (): void {}
                 );
         }
-        $player->sendMessage("NO INSTANCE");
+        echo "NO INSTANCE";
         return 0;
     }
 
