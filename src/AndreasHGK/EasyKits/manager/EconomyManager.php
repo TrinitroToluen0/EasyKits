@@ -49,8 +49,8 @@ class EconomyManager{
                     xuid: $player->getXuid(),
                     username: $player->getName(),
                     onSuccess: static function (array $result) {
-                        global $player;
-                        $player->sendMessage("SUCCESS EKITS, AMOUNT:" . $result["amount"]);
+                        echo print_r($result);
+                        echo $result["amount"];
                         return $result["amount"];
                     },
                     onError: static function ($player): void {
