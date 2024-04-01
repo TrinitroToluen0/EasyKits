@@ -108,6 +108,8 @@ class Kit{
         }
         if($kit->getPrice() > 0){
             if(EconomyManager::isEconomyLoaded()){
+                echo "(1) KIT PRICE: " . $this->getPrice();
+                echo "USER MONEY: " . EconomyManager::getMoney($player);
                 if(EconomyManager::getMoney($player) < $this->getPrice()){
                     throw new KitException("Player has insufficient funds", 1);
                 }
@@ -160,6 +162,8 @@ class Kit{
 
         if($kit->getPrice() > 0){
             if(EconomyManager::isEconomyLoaded()){
+                echo "(2) KIT PRICE: " . $this->getPrice();
+                echo "USER MONEY: " . EconomyManager::getMoney($player);
                 if(EconomyManager::getMoney($player) < $this->getPrice()){
                     throw new KitException("Player has insufficient funds", 1);
                 }
