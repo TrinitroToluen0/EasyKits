@@ -34,19 +34,29 @@ class EconomyManager{
      * @param Player $player
      * @return float
      */
-    public static function getMoney(Player $player)
+    public static function getMoney(Player $player): float
     {
-        BedrockEconomyAPI::CLOSURE()->get(
-            xuid: $player->getXuid(),
-            username: $player->getName(),
-            onSuccess: function (array $result) {
-                return $result["amount"];
-            },
-            onError: static function (): void {
-            }
-        );
+        $economy = self::getEconomy();
+        $money = 0;
+        switch (true) {
+            case $economy instanceof EconomyAPI:
+                return $economy->myMoney($player);
+            case $economy instanceof MultiEconomy:
+                $currency = DataManager::getKey(DataManager::CONFIG, "multieconomy-currency");
+                return $economy->getAPI()->getBalance($player->getName(), $currency);
+            case $economy instanceof BedrockEconomy:
+                BedrockEconomyAPI::CLOSURE()->get(
+                    xuid: $player->getXuid(),
+                    username: $player->getName(),
+                    onSuccess: function (array $result) use (&$money) {
+                        $money = $result["amount"];
+                    },
+                    onError: static function (): void {
+                    }
+                );
+        }
+        return $money;
     }
-
 
     /**
      * @param Player $player
