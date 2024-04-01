@@ -45,7 +45,7 @@ class EconomyManager{
                 $currency = DataManager::getKey(DataManager::CONFIG, "multieconomy-currency");
                 return $economy->getAPI()->getBalance($player->getName(), $currency);
             case $economy instanceof BedrockEconomy:
-                $economy->get(
+                BedrockEconomyAPI::CLOSURE()->get(
                     xuid: $player->getXuid(),
                     username: $player->getName(),
                     onSuccess: static function (array $result) {
@@ -76,7 +76,7 @@ class EconomyManager{
                 $economy->getAPI()->setBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
             case $economy instanceof BedrockEconomy:
-                $economy->set(
+                BedrockEconomyAPI::CLOSURE()->set(
                     xuid: $player->getXuid(),
                     username: $player->getName(),
                     amount: (int) $money,
@@ -105,7 +105,7 @@ class EconomyManager{
                 $economy->getAPI()->takeFromBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
             case $economy instanceof BedrockEconomy:
-                $economy->subtract(
+                BedrockEconomyAPI::CLOSURE()->subtract(
                     xuid: $player->getXuid(),
                     username: $player->getName(),
                     amount: (int) $money,
@@ -134,7 +134,7 @@ class EconomyManager{
                 $economy->getAPI()->addToBalance($player->getName(), DataManager::getKey(DataManager::CONFIG, "multieconomy-currency"), $money);
                 break;
             case $economy instanceof BedrockEconomy:
-                $economy->add(
+                BedrockEconomyAPI::CLOSURE()->add(
                     xuid: $player->getXuid(),
                     username: $player->getName(),
                     amount: (int) $money,
@@ -159,7 +159,7 @@ class EconomyManager{
         }
         $bedrockEconomy = $plugins->getPlugin("BedrockEconomy");
         if($bedrockEconomy instanceof BedrockEconomy){
-            self::$economy = BedrockEconomyAPI::CLOSURE();
+            self::$economy = $bedrockEconomy;
             EasyKits::get()->getLogger()->info("loaded BedrockEconomy");
             return;
         }
