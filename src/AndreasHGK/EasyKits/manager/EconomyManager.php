@@ -37,6 +37,7 @@ class EconomyManager{
     public static function getMoney(Player $player): float
     {
         $economy = self::getEconomy();
+        EasyKits::get()->getLogger()->info(get_class($economy) . "\n");
         switch (true) {
             case $economy instanceof EconomyAPI:
                 return $economy->myMoney($player);
@@ -48,13 +49,13 @@ class EconomyManager{
                     xuid: $player->getXuid(),
                     username: $player->getName(),
                     onSuccess: function (array $result) {
-                        echo $result["amount"] . "\n";
+                        EasyKits::get()->getLogger()->info($result["amount"] . "\n");
                         return $result["amount"];
                     },
                     onError: static function (): void {}
                 );
         }
-        echo "NO INSTANCE\n";
+        EasyKits::get()->getLogger()->info("NO INSTANCE \n");
         return 0;
     }
 
@@ -172,9 +173,6 @@ class EconomyManager{
         return self::getEconomy() !== null;
     }
 
-    /**
-     * @return void
-     */
     public static function getEconomy(){
         return self::$economy;
     }
