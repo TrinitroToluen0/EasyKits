@@ -50,11 +50,12 @@ class EconomyManager{
                     username: $player->getName(),
                     onSuccess: function (array $result) use (&$money) {
                         $money = $result["amount"];
+                        EasyKits::get()->getLogger()->info($money);
                     },
-                    onError: static function (): void {
-                    }
+                    onError: static function (): void {}
                 );
         }
+        EasyKits::get()->getLogger()->info($money);
         return $money;
     }
 
