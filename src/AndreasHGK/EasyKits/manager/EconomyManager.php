@@ -48,7 +48,8 @@ class EconomyManager{
                 BedrockEconomyAPI::CLOSURE()->get(
                     xuid: $player->getXuid(),
                     username: $player->getName(),
-                    onSuccess: static function (array $result, $player) {
+                    onSuccess: static function (array $result) {
+                        global $player;
                         $player->sendMessage("SUCCESS EKITS, AMOUNT:" . $result["amount"]);
                         return $result["amount"];
                     },
@@ -57,6 +58,7 @@ class EconomyManager{
                     }
                 );
         }
+        $player->sendMessage("NO INSTANCE");
         return 0;
     }
 
